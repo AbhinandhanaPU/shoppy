@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shoppy/model/product_model.dart';
 import 'package:shoppy/view/screens/cart/cart_list.dart';
 import 'package:shoppy/view/screens/product/product_details.dart';
 
@@ -26,24 +27,30 @@ class ProductList extends StatelessWidget {
         ],
       ),
       body: GridView.builder(
-        itemCount: 20,
+        itemCount: productsList.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, mainAxisExtent: 300),
+          crossAxisCount: 2,
+          mainAxisExtent: 300,
+        ),
         itemBuilder: (context, index) {
+          final product = productsList[index];
           return GestureDetector(
             onTap: () {
-              Get.to(() => const ProductDetails());
+              Get.to(() => ProductDetails(product: product));
             },
             child: Container(
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade200, width: 2),
+                border: Border.all(
+                  color: Colors.grey.shade200,
+                  width: 2,
+                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: Image.asset(
-                      'assets/images/shoes.jpeg',
+                      product.imageUrl,
                       fit: BoxFit.cover,
                       width: double.infinity,
                     ),
@@ -51,22 +58,32 @@ class ProductList extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.only(left: 10, top: 5),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Shoes',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500, fontSize: 16),
-                            ),
-                            Text(
-                              '₹ 1258',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w700, fontSize: 20),
-                            ),
-                          ],
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 10,
+                            top: 10,
+                            bottom: 10,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                product.name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              Text(
+                                '₹${product.price.round()}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       IconButton(

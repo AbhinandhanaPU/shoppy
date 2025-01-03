@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shoppy/view/widgets/custom_button_border.dart';
+import 'package:shoppy/view/widgets/custom_button_widget.dart';
 
 class RemoveProductBottomSheet extends StatelessWidget {
   final String productName;
@@ -68,49 +70,19 @@ class RemoveProductBottomSheet extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: ElevatedButton(
+                  child: CustomBorderedButton(
+                    text: 'Cancel',
+                    radius: 0,
+                    bgColor: Colors.white,
+                    fgColor: Colors.black,
                     onPressed: () => Get.back(),
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.black,
-                      backgroundColor: Colors.white,
-                      shape: const BeveledRectangleBorder(
-                        side: BorderSide(color: Colors.black, width: 0.5),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                    ),
-                    child: const Text(
-                      'Cancel',
-                      style: TextStyle(fontSize: 18),
-                    ),
                   ),
                 ),
                 const SizedBox(width: 15),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: onRemove,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white,
-                      shape: const BeveledRectangleBorder(),
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                    ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.close,
-                          size: 18,
-                        ),
-                        SizedBox(width: 10),
-                        Text(
-                          'Remove',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ],
-                    ),
+                const Expanded(
+                  child: CustomFilledButton(
+                    text: 'Remove',
+                    radius: 0,
                   ),
                 ),
               ],

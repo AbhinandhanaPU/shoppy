@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shoppy/view/screens/payment/address_screen.dart';
 import 'package:shoppy/view/widgets/custom_bottomsheet.dart';
+import 'package:shoppy/view/widgets/custom_button_widget.dart';
 
 class CartList extends StatelessWidget {
   const CartList({super.key});
@@ -25,86 +28,110 @@ class CartList extends StatelessWidget {
                     itemBuilder: (context, index) {
                       return Container(
                         color: Colors.white,
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 15),
-                          isThreeLine: true,
-                          leading: Container(
-                            height: 100,
-                            width: 60,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey),
-                            ),
-                            child: Image.asset(
-                              'assets/images/shoes.jpeg',
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          title: const Text(
-                            'Running Shoes',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 18,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 5),
-                              const Text(
-                                '₹1258',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 17,
+                        child: Column(
+                          children: [
+                            ListTile(
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 15,
+                              ),
+                              isThreeLine: true,
+                              leading: Container(
+                                height: 100,
+                                width: 60,
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                ),
+                                child: Image.asset(
+                                  'assets/images/shoes.jpeg',
+                                  fit: BoxFit.cover,
                                 ),
                               ),
-                              const SizedBox(height: 10),
-                              GestureDetector(
-                                onTap: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    isDismissible: false,
-                                    shape: const BeveledRectangleBorder(),
-                                    builder: (context) {
-                                      return RemoveProductBottomSheet(
-                                        productName: 'Running Shoes',
-                                        productImage:
-                                            'assets/images/shoes.jpeg',
-                                        productPrice: '1258',
-                                        onRemove: () {
-                                          Navigator.pop(context);
+                              title: const Text(
+                                'Running Shoes',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 18,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 5),
+                                  const Text(
+                                    '₹1258',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  GestureDetector(
+                                    onTap: () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        isDismissible: false,
+                                        shape: const BeveledRectangleBorder(),
+                                        builder: (context) {
+                                          return RemoveProductBottomSheet(
+                                            productName: 'Running Shoes',
+                                            productImage:
+                                                'assets/images/shoes.jpeg',
+                                            productPrice: '1258',
+                                            onRemove: () {
+                                              Navigator.pop(context);
+                                            },
+                                          );
                                         },
                                       );
                                     },
-                                  );
-                                },
-                                child: const Row(
-                                  children: [
-                                    Icon(
-                                      Icons.close,
-                                      size: 18,
+                                    child: const Row(
+                                      children: [
+                                        Icon(
+                                          Icons.close,
+                                          size: 18,
+                                        ),
+                                        SizedBox(width: 10),
+                                        Text(
+                                          'remove',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      'remove',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                  ],
+                                  ),
+                                ],
+                              ),
+                              trailing: IconButton(
+                                onPressed: () {},
+                                icon: const Icon(
+                                  Icons.arrow_forward_ios_outlined,
+                                  size: 18,
                                 ),
                               ),
-                            ],
-                          ),
-                          trailing: IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.arrow_forward_ios_outlined,
-                              size: 18,
                             ),
-                          ),
+                            const Divider(),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 15),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Supplier / Sold By :',
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                  Text(
+                                    ' product.soldBy',
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       );
                     },
@@ -211,25 +238,10 @@ class CartList extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    foregroundColor: Colors.white,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                    ),
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 35),
-                  ),
-                  child: const Text(
-                    'Continue',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 20,
-                    ),
-                  ),
-                ),
+                CustomFilledButton(
+                  text: 'Continue',
+                  onPressed: () => Get.to(() => const AddressScreen()),
+                )
               ],
             ),
           ),
