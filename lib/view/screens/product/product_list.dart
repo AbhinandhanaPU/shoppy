@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shoppy/controller/auth_controller.dart';
+import 'package:shoppy/controller/cart_controller.dart';
 import 'package:shoppy/model/product_model.dart';
 import 'package:shoppy/view/screens/cart/cart_list.dart';
 import 'package:shoppy/view/screens/product/product_details.dart';
@@ -10,6 +11,7 @@ class ProductList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AuthController authController = Get.put(AuthController());
+    final CartController cartController = Get.put(CartController());
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -22,7 +24,7 @@ class ProductList extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              Get.to(() => const CartList());
+              Get.to(() => const CartScreen());
             },
             tooltip: 'Cart',
             icon: const Icon(
@@ -62,46 +64,31 @@ class ProductList extends StatelessWidget {
                       width: double.infinity,
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            left: 10,
-                            top: 10,
-                            bottom: 10,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                product.name,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              Text(
-                                '₹${product.price.round()}',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ],
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 10,
+                      top: 10,
+                      bottom: 10,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          product.name,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
                           ),
                         ),
-                      ),
-                      IconButton(
-                        onPressed: () {},
-                        tooltip: 'Add to Cart',
-                        icon: const Icon(
-                          Icons.shopping_cart_outlined,
-                          color: Colors.blue,
+                        Text(
+                          '₹${product.price.round()}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 18,
+                          ),
                         ),
-                      )
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),

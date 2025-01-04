@@ -2,7 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shoppy/controller/cart_controller.dart';
+import 'package:shoppy/controller/payment_controller.dart';
 import 'package:shoppy/model/product_model.dart';
+import 'package:shoppy/view/screens/cart/cart_list.dart';
 import 'package:shoppy/view/screens/payment/address_screen.dart';
 import 'package:shoppy/view/widgets/custom_button_border.dart';
 import 'package:shoppy/view/widgets/custom_button_widget.dart';
@@ -16,6 +19,9 @@ class ProductDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final CartController cartController = Get.put(CartController());
+    final PaymentController paymentController = Get.put(PaymentController());
+
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
@@ -75,27 +81,38 @@ class ProductDetails extends StatelessWidget {
             ),
             const Divider(),
             const Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Expanded(
-                  child: CustomBorderedButton(
-                    text: 'Add to cart',
-                    radius: 0,
+            Obx(() {
+              bool isInCart = cartController.isInCart.value;
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: CustomBorderedButton(
+                      text: isInCart ? 'Go to Cart' : 'Add to Cart',
+                      radius: 0,
+                      onPressed: () {
+                        if (isInCart) {
+                          Get.to(() => const CartScreen());
+                        } else {
+                          cartController.addToCart(product, 1);
+                        }
+                      },
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                Expanded(
-                  child: CustomFilledButton(
-                    text: 'Buy Now',
-                    radius: 0,
-                    onPressed: () => Get.to(() => const AddressScreen()),
+                  const SizedBox(width: 5),
+                  Expanded(
+                    child: CustomFilledButton(
+                      text: 'Buy Now',
+                      radius: 0,
+                      onPressed: () {
+                        paymentController.totalPrice.value = product.price;
+                        Get.to(() => const AddressScreen());
+                      },
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              );
+            }),
           ],
         ),
       ),

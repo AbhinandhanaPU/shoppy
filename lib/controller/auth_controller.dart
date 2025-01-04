@@ -12,7 +12,7 @@ import 'package:shoppy/view/screens/splash/splash_screen.dart';
 
 class AuthController extends GetxController {
   final _auth = FirebaseAuth.instance;
-  final _server = FirebaseFirestore.instance;
+  final _firestore = FirebaseFirestore.instance;
   late final Rx<User?> firebaseUser;
 
   final countryController = TextEditingController();
@@ -83,7 +83,7 @@ class AuthController extends GetxController {
       otpController.clear();
       phoneController.clear();
       DocumentSnapshot userDoc =
-          await _server.collection('users').doc(user.uid).get();
+          await _firestore.collection('users').doc(user.uid).get();
 
       if (userDoc.exists) {
         Get.snackbar(
@@ -112,7 +112,7 @@ class AuthController extends GetxController {
   // Store user details in Firestore
   Future<void> _storeUserDetails(User user) async {
     try {
-      await _server.collection('users').doc(user.uid).set({
+      await _firestore.collection('users').doc(user.uid).set({
         'uid': user.uid,
         'phoneNumber': user.phoneNumber,
         'createdAt': FieldValue.serverTimestamp(),

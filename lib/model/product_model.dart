@@ -12,6 +12,26 @@ class Product {
     required this.price,
     required this.soldBy,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'imageUrl': imageUrl,
+      'name': name,
+      'description': description,
+      'price': price,
+      'soldBy': soldBy,
+    };
+  }
+
+  factory Product.fromMap(Map<String, dynamic> map) {
+    return Product(
+      imageUrl: map['imageUrl'],
+      name: map['name'],
+      description: map['description'],
+      price: map['price'],
+      soldBy: map['soldBy'],
+    );
+  }
 }
 
 final List<Product> productsList = [

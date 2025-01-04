@@ -79,10 +79,11 @@ class RemoveProductBottomSheet extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 15),
-                const Expanded(
+                Expanded(
                   child: CustomFilledButton(
                     text: 'Remove',
                     radius: 0,
+                    onPressed: onRemove,
                   ),
                 ),
               ],
