@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-import 'package:shoppy/view/screens/login/user_login.dart';
+import 'package:shoppy/controller/auth_controller.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -11,12 +12,10 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  bool iswaiting = true;
   @override
   void initState() {
     Future.delayed(const Duration(seconds: 3)).then((value) {
-      iswaiting = false;
-      setState(() {});
+      Get.put(AuthController());
     });
 
     super.initState();
@@ -24,9 +23,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (iswaiting == false) {
-      return const UserLogin();
-    }
     return Scaffold(
       body: SafeArea(
         child: Center(

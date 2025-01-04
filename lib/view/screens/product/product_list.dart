@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shoppy/controller/auth_controller.dart';
 import 'package:shoppy/model/product_model.dart';
 import 'package:shoppy/view/screens/cart/cart_list.dart';
 import 'package:shoppy/view/screens/product/product_details.dart';
 
 class ProductList extends StatelessWidget {
   const ProductList({super.key});
-
   @override
   Widget build(BuildContext context) {
+    final AuthController authController = Get.put(AuthController());
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            authController.logout();
+          },
+          icon: const Icon(Icons.logout),
+        ),
         title: const Text('Shoppy'),
         actions: [
           IconButton(

@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
-import 'package:shoppy/view/screens/login/scratch_card.dart';
+import 'package:shoppy/controller/auth_controller.dart';
 import 'package:shoppy/view/widgets/custom_button_widget.dart';
 
 class OTPScreen extends StatelessWidget {
@@ -11,6 +11,8 @@ class OTPScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AuthController authController = Get.put(AuthController());
+
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
@@ -56,6 +58,12 @@ class OTPScreen extends StatelessWidget {
             Pinput(
               length: 6,
               showCursor: true,
+              controller: authController.otpController,
+              keyboardType: TextInputType.number,
+              onSubmitted: (value) async {
+                authController.countryController.text = value;
+                await authController.verifyOtp();
+              },
               onCompleted: (pin) => log(pin),
             ),
             const SizedBox(height: 30),
@@ -90,7 +98,9 @@ class OTPScreen extends StatelessWidget {
               width: double.infinity,
               child: CustomFilledButton(
                 text: "VERIFY & PROCEED",
-                onPressed: () => Get.to(() => const ScratchCardScreen()),
+                onPressed: () async {
+                  await authController.verifyOtp();
+                },
               ),
             )
           ],
