@@ -1,11 +1,18 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shoppy/controller/address_controller.dart';
+import 'package:shoppy/model/cart_model.dart';
+import 'package:shoppy/view/screens/payment/payment_mode.dart';
 import 'package:shoppy/view/widgets/custom_button_widget.dart';
 import 'package:shoppy/view/widgets/textformfield.dart';
 
 class AddressScreen extends StatelessWidget {
-  const AddressScreen({super.key});
+  final List<CartItem> cartItem;
+  const AddressScreen({
+    super.key,
+    this.cartItem = const [],
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -175,6 +182,7 @@ class AddressScreen extends StatelessWidget {
                     text: 'Save Address and Continue',
                     onPressed: () {
                       addressController.saveAddress();
+                      Get.to(() => PayementMode(cartItem: cartItem));
                     },
                   ),
                 )

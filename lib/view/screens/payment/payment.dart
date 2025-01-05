@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shoppy/view/screens/product/product_list.dart';
 
-Future<void> simulatePayment() async {
+Future<void> simulatePayment(bool isOnline) async {
   await Future.delayed(const Duration(seconds: 2));
 
   Get.snackbar(
-    'Payment Successful',
+    isOnline ? 'Payment Successful' : 'Successful',
     'Your order has been placed successfully!',
     snackPosition: SnackPosition.BOTTOM,
     backgroundColor: Colors.green,

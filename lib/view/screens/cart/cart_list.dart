@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shoppy/controller/cart_controller.dart';
@@ -301,9 +303,11 @@ class CartScreen extends StatelessWidget {
                     ),
                     const Spacer(),
                     CustomFilledButton(
-                      text: 'Continue',
-                      onPressed: () => Get.to(() => const AddressScreen()),
-                    )
+                        text: 'Continue',
+                        onPressed: () {
+                          log(cartItems.length.toString());
+                          Get.to(() => AddressScreen(cartItem: cartItems));
+                        })
                   ],
                 ),
               ),

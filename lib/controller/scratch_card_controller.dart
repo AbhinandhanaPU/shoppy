@@ -6,7 +6,7 @@ import 'package:shoppy/model/product_model.dart';
 
 class ScratchCardController extends GetxController {
   late ConfettiController confettiController;
-  var randomProduct = ''.obs;
+  var randomProduct = Rx<Product?>(null);
 
   @override
   void onInit() {
@@ -18,7 +18,7 @@ class ScratchCardController extends GetxController {
 
   void _generateRandomProduct() {
     final randomIndex = Random().nextInt(productsList.length);
-    randomProduct.value = productsList[randomIndex].name;
+    randomProduct.value = productsList[randomIndex];
   }
 
   void playConfetti() {

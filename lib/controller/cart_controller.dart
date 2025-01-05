@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -57,6 +59,44 @@ class CartController extends GetxController {
     }
   }
 
+  Future<void> addFreeProductCart(Product product, int quantity) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        Get.snackbar('Error', 'User not logged in');
+        return;
+      }
+
+      final cartRef =
+          _firestore.collection('users').doc(user.uid).collection('cart');
+
+      final cartSnapshot = await cartRef.get();
+      if (cartSnapshot.docs.isNotEmpty) {
+        Get.snackbar('Info', 'Free product already claimed');
+        return;
+      }
+
+      final freeProduct = product.copyWith(price: 0.0);
+      final uuid = const Uuid().v4();
+
+      await cartRef.doc(uuid).set(CartItem(
+            cartItemId: uuid,
+            product: freeProduct,
+            quantity: quantity,
+            createdAt: Timestamp.now(),
+          ).toMap());
+
+      Get.snackbar(
+        'Congratulations!',
+        'You have received a free product!',
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to add free product: $e');
+    }
+  }
+
   Future<void> checkIfInCart(Product product) async {
     bool status = await isInFirestoreCart(product);
     isInCart.value = status;
@@ -70,8 +110,9 @@ class CartController extends GetxController {
       }
       final cartRef =
           _firestore.collection('users').doc(user.uid).collection('cart');
-      final existingItem =
-          await cartRef.where('product.name', isEqualTo: product.name).get();
+      final existingItem = await cartRef
+          .where('product.productId', isEqualTo: product.productId)
+          .get();
 
       return existingItem.docs.isNotEmpty;
     } catch (e) {
@@ -94,16 +135,18 @@ class CartController extends GetxController {
 
   Future<void> removeFromCart(String cartItemId) async {
     try {
+      log('removing from cart');
       final user = _auth.currentUser;
       if (user == null) {
-        Get.snackbar('Error', 'User not logged in');
+        log('Error ,User not logged in');
         return;
       }
 
       final cartRef =
           _firestore.collection('users').doc(user.uid).collection('cart');
       await cartRef.doc(cartItemId).delete();
-      Get.snackbar('Success', 'Item removed from cart');
+
+      // Get.snackbar('Success', 'Item removed from cart');
     } catch (e) {
       Get.snackbar('Error', 'Failed to remove item from cart: $e');
     }

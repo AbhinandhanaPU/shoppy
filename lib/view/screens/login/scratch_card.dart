@@ -2,6 +2,7 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scratcher/scratcher.dart';
+import 'package:shoppy/controller/cart_controller.dart';
 import 'package:shoppy/controller/scratch_card_controller.dart';
 import 'package:shoppy/view/screens/product/product_list.dart';
 import 'package:shoppy/view/widgets/custom_button_widget.dart';
@@ -13,6 +14,7 @@ class ScratchCardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ScratchCardController controller = Get.put(ScratchCardController());
+    final CartController cartController = Get.put(CartController());
 
     return Scaffold(
       backgroundColor: Colors.blueGrey,
@@ -68,7 +70,7 @@ class ScratchCardScreen extends StatelessWidget {
                     ),
                     Obx(
                       () => Text(
-                        "${controller.randomProduct.value} For ₹0",
+                        "${controller.randomProduct.value!.name} For ₹0",
                         style: const TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 22,
@@ -94,6 +96,8 @@ class ScratchCardScreen extends StatelessWidget {
               text: 'Add to cart',
               onPressed: () {
                 showToast(msg: 'Product added to cart');
+                cartController.addFreeProductCart(
+                    controller.randomProduct.value!, 1);
                 Get.to(() => const ProductList());
               },
             )

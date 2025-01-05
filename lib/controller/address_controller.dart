@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shoppy/view/screens/payment/payment_mode.dart';
 
 class AddressController extends GetxController {
   final TextEditingController nameController = TextEditingController();
@@ -162,8 +161,6 @@ Contact: ${contactNumberController.text}''';
       try {
         clearFields();
         isFormVisible.value = false;
-
-        Get.to(() => const PayementMode());
       } catch (e) {
         Get.snackbar('Error', 'Failed to save the address. Please try again.');
       }

@@ -21,7 +21,7 @@ class ProductDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     final CartController cartController = Get.put(CartController());
     final PaymentController paymentController = Get.put(PaymentController());
-
+    cartController.checkIfInCart(product);
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
@@ -56,7 +56,7 @@ class ProductDetails extends StatelessWidget {
             Text(
               '₹${product.price.round()}',
               style: const TextStyle(
-                fontSize: 20,
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: Colors.teal,
               ),
@@ -105,7 +105,7 @@ class ProductDetails extends StatelessWidget {
                       text: 'Buy Now',
                       radius: 0,
                       onPressed: () {
-                        paymentController.totalPrice.value = product.price;
+                        paymentController.addProduct(product, 1);
                         Get.to(() => const AddressScreen());
                       },
                     ),

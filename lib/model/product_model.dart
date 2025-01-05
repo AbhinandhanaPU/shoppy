@@ -1,4 +1,5 @@
 class Product {
+  final String productId;
   final String imageUrl;
   final String name;
   final String description;
@@ -6,6 +7,7 @@ class Product {
   final String soldBy;
 
   Product({
+    required this.productId,
     required this.imageUrl,
     required this.name,
     required this.description,
@@ -13,8 +15,27 @@ class Product {
     required this.soldBy,
   });
 
+  Product copyWith({
+    String? productId,
+    String? name,
+    String? imageUrl,
+    String? description,
+    double? price,
+    String? soldBy,
+  }) {
+    return Product(
+      productId: productId ?? this.productId,
+      name: name ?? this.name,
+      imageUrl: imageUrl ?? this.imageUrl,
+      description: description ?? this.description,
+      price: price ?? this.price,
+      soldBy: soldBy ?? this.soldBy,
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
+      'productId': productId,
       'imageUrl': imageUrl,
       'name': name,
       'description': description,
@@ -25,6 +46,7 @@ class Product {
 
   factory Product.fromMap(Map<String, dynamic> map) {
     return Product(
+      productId: map['productId'],
       imageUrl: map['imageUrl'],
       name: map['name'],
       description: map['description'],
@@ -36,6 +58,7 @@ class Product {
 
 final List<Product> productsList = [
   Product(
+    productId: '1',
     imageUrl: 'assets/images/shoes.jpeg',
     name: 'Running Shoes',
     description: 'Comfortable and durable running shoes for daily use.',
@@ -43,6 +66,7 @@ final List<Product> productsList = [
     soldBy: 'Sports World',
   ),
   Product(
+    productId: '2',
     imageUrl: 'assets/images/backpack.jpg',
     name: 'Travel Backpack',
     description: 'Spacious and lightweight backpack, perfect for travel.',
@@ -50,6 +74,7 @@ final List<Product> productsList = [
     soldBy: 'Adventure Gear',
   ),
   Product(
+    productId: '3',
     imageUrl: 'assets/images/smartwatch.jpg',
     name: 'Smartwatch',
     description: 'Feature-packed smartwatch with heart-rate monitoring.',
@@ -57,6 +82,7 @@ final List<Product> productsList = [
     soldBy: 'Gadget Zone',
   ),
   Product(
+    productId: '4',
     imageUrl: 'assets/images/headphones.jpg',
     name: 'Wireless Headphones',
     description:
@@ -65,6 +91,7 @@ final List<Product> productsList = [
     soldBy: 'Music Hub',
   ),
   Product(
+    productId: '5',
     imageUrl: 'assets/images/jacket.jpeg',
     name: 'Winter Jacket',
     description: 'Warm and waterproof winter jacket for outdoor adventures.',
@@ -72,6 +99,7 @@ final List<Product> productsList = [
     soldBy: 'Outdoor Outfitters',
   ),
   Product(
+    productId: '6',
     imageUrl: 'assets/images/sunglasses.jpeg',
     name: 'Sunglasses',
     description: 'Stylish sunglasses with UV protection.',
@@ -79,6 +107,7 @@ final List<Product> productsList = [
     soldBy: 'Fashion Accessories',
   ),
   Product(
+    productId: '7',
     imageUrl: 'assets/images/keyboard.jpeg',
     name: 'Mechanical Keyboard',
     description: 'High-performance mechanical keyboard with RGB lighting.',
@@ -86,6 +115,7 @@ final List<Product> productsList = [
     soldBy: 'Tech Store',
   ),
   Product(
+    productId: '8',
     imageUrl: 'assets/images/blender.jpeg',
     name: 'Kitchen Blender',
     description: 'Powerful blender for smoothies, soups, and sauces.',
@@ -93,6 +123,7 @@ final List<Product> productsList = [
     soldBy: 'Home Essentials',
   ),
   Product(
+    productId: '9',
     imageUrl: 'assets/images/laptop.jpeg',
     name: 'Laptop',
     description: 'High-performance laptop for work and gaming.',
@@ -100,6 +131,7 @@ final List<Product> productsList = [
     soldBy: 'Electronics Hub',
   ),
   Product(
+    productId: '10',
     imageUrl: 'assets/images/phone.jpeg',
     name: 'Smartphone',
     description: 'Latest smartphone with top-notch camera and performance.',
@@ -107,6 +139,7 @@ final List<Product> productsList = [
     soldBy: 'Mobile World',
   ),
   Product(
+    productId: '11',
     imageUrl: 'assets/images/watch.jpeg',
     name: 'Analog Watch',
     description: 'Classic analog watch with leather strap.',
@@ -114,6 +147,7 @@ final List<Product> productsList = [
     soldBy: 'Timeless Watches',
   ),
   Product(
+    productId: '12',
     imageUrl: 'assets/images/wallet.jpeg',
     name: 'Leather Wallet',
     description: 'Premium leather wallet with multiple compartments.',
@@ -121,6 +155,7 @@ final List<Product> productsList = [
     soldBy: 'Leather Goods Co.',
   ),
   Product(
+    productId: '13',
     imageUrl: 'assets/images/tshirt.jpeg',
     name: 'T-Shirt',
     description: 'Cotton T-shirt available in various colors.',
@@ -128,6 +163,7 @@ final List<Product> productsList = [
     soldBy: 'Apparel Store',
   ),
   Product(
+    productId: '14',
     imageUrl: 'assets/images/jeans.jpg',
     name: 'Jeans',
     description: 'Comfortable and stretchable denim jeans.',
@@ -135,6 +171,7 @@ final List<Product> productsList = [
     soldBy: 'Denim Depot',
   ),
   Product(
+    productId: '15',
     imageUrl: 'assets/images/mug.jpeg',
     name: 'Coffee Mug',
     description: 'Ceramic coffee mug with unique design.',
@@ -142,6 +179,7 @@ final List<Product> productsList = [
     soldBy: 'Mug Mania',
   ),
   Product(
+    productId: '16',
     imageUrl: 'assets/images/lamp.jpeg',
     name: 'Desk Lamp',
     description: 'Adjustable desk lamp with LED lighting.',
@@ -149,6 +187,7 @@ final List<Product> productsList = [
     soldBy: 'Lighting Store',
   ),
   Product(
+    productId: '17',
     imageUrl: 'assets/images/earbuds.jpeg',
     name: 'Wireless Earbuds',
     description: 'Compact and high-quality wireless earbuds.',
@@ -156,6 +195,7 @@ final List<Product> productsList = [
     soldBy: 'Gadget Zone',
   ),
   Product(
+    productId: '18',
     imageUrl: 'assets/images/fitnessband.jpeg',
     name: 'Fitness Band',
     description: 'Fitness band with step tracking and sleep monitoring.',
@@ -163,6 +203,7 @@ final List<Product> productsList = [
     soldBy: 'Fitness Gear',
   ),
   Product(
+    productId: '19',
     imageUrl: 'assets/images/bottle.jpg',
     name: 'Water Bottle',
     description: 'Stainless steel water bottle with 1L capacity.',
@@ -170,6 +211,7 @@ final List<Product> productsList = [
     soldBy: 'Home Essentials',
   ),
   Product(
+    productId: '20',
     imageUrl: 'assets/images/camera.jpg',
     name: 'Digital Camera',
     description: 'High-resolution digital camera with advanced features.',

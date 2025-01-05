@@ -1,18 +1,31 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shoppy/controller/address_controller.dart';
+import 'package:shoppy/controller/cart_controller.dart';
 import 'package:shoppy/controller/payment_controller.dart';
+import 'package:shoppy/controller/receipt_controller/pdf_controller.dart';
+import 'package:shoppy/model/cart_model.dart';
+import 'package:shoppy/model/product_model.dart';
+import 'package:shoppy/view/screens/payment/address_screen.dart';
 import 'package:shoppy/view/screens/payment/payment.dart';
 import 'package:shoppy/view/widgets/custom_button_widget.dart';
 
 class PayementMode extends StatelessWidget {
-  const PayementMode({super.key});
+  final List<CartItem> cartItem;
+  PayementMode({
+    super.key,
+    this.cartItem = const [],
+  });
 
+  final PaymentController paymentController = Get.put(PaymentController());
+  final AddressController addressController = Get.put(AddressController());
+  final CartController cartController = Get.put(CartController());
   @override
   Widget build(BuildContext context) {
-    final PaymentController paymentController = Get.put(PaymentController());
-    final AddressController addressController = Get.put(AddressController());
-
     return Scaffold(
       backgroundColor: Colors.grey.shade300,
       appBar: AppBar(
@@ -20,18 +33,22 @@ class PayementMode extends StatelessWidget {
       ),
       body: Column(
         children: [
-          _buildPaymentSelectionSection(paymentController),
+          _buildPaymentSelectionSection(),
           const SizedBox(height: 10),
-          _buildAddressSection(addressController),
+          cartItem.isNotEmpty
+              ? addressController.fullAddress.value == ''
+                  ? _buildSelectAddressButton()
+                  : _buildAddressSection()
+              : _buildAddressSection(),
           const Spacer(),
-          _buildOrderSection(paymentController),
+          _buildOrderSection(context),
         ],
       ),
     );
   }
 
   //  payment mode selection widget
-  Widget _buildPaymentSelectionSection(PaymentController paymentController) {
+  Widget _buildPaymentSelectionSection() {
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.symmetric(vertical: 20),
@@ -53,13 +70,11 @@ class PayementMode extends StatelessWidget {
           _buildPaymentOption(
             title: 'Cash on Delivery',
             value: 'Cash on Delivery',
-            paymentController: paymentController,
           ),
           const SizedBox(height: 15),
           _buildPaymentOption(
             title: 'Online Payment',
             value: 'Online Payment',
-            paymentController: paymentController,
           ),
         ],
       ),
@@ -70,7 +85,6 @@ class PayementMode extends StatelessWidget {
   Widget _buildPaymentOption({
     required String title,
     required String value,
-    required PaymentController paymentController,
   }) {
     return Obx(() {
       return InkWell(
@@ -130,8 +144,53 @@ class PayementMode extends StatelessWidget {
     });
   }
 
+  // 'Select Address' button widget
+  Widget _buildSelectAddressButton() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Row(
+            children: [
+              Icon(
+                Icons.delivery_dining_rounded,
+                color: Colors.blue,
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Text(
+                'Delivery Adrees',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          SizedBox(
+            height: 40,
+            width: double.infinity,
+            child: CustomFilledButton(
+              text: 'Select Address',
+              onPressed: () {
+                Get.to(() => const AddressScreen());
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   //  address displaying widget
-  Widget _buildAddressSection(AddressController addressController) {
+  Widget _buildAddressSection() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
       width: double.infinity,
@@ -148,7 +207,7 @@ class PayementMode extends StatelessWidget {
             ),
           ),
           ElevatedButton(
-            onPressed: () => Get.back(),
+            onPressed: () => Get.to(() => const AddressScreen()),
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.blue,
               backgroundColor: Colors.white,
@@ -168,7 +227,7 @@ class PayementMode extends StatelessWidget {
   }
 
   // place order
-  Widget _buildOrderSection(PaymentController paymentController) {
+  Widget _buildOrderSection(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       decoration: const BoxDecoration(
@@ -185,11 +244,61 @@ class PayementMode extends StatelessWidget {
           ),
           const Spacer(),
           CustomFilledButton(
-            text: 'Place Order',
-            onPressed: () async {
-              await simulatePayment();
-            },
-          )
+              text: 'Place Order',
+              onPressed: () async {
+                if (addressController.fullAddress.value != '') {
+                  log(cartItem.length.toString());
+                  log(paymentController.productList.length.toString());
+
+                  if (cartItem.isNotEmpty ||
+                      paymentController.productList.isNotEmpty) {
+                    bool isOnline =
+                        paymentController.selectedPaymentMethod.value ==
+                            'Online Payment';
+                    await simulatePayment(isOnline);
+
+                    await ReceiptGenerator()
+                        .generateReceipt(cartItem.isNotEmpty
+                            ? cartItem
+                            : paymentController.productList.entries
+                                .map((entry) {
+                                return CartItem(
+                                  cartItemId: '',
+                                  product: entry.key,
+                                  quantity: entry.value,
+                                  createdAt: Timestamp.now(),
+                                );
+                              }).toList())
+                        .then((value) async {
+                      if (cartItem.isNotEmpty) {
+                        for (var item in cartItem) {
+                          await cartController.removeFromCart(item.cartItemId);
+                        }
+                      }
+
+                      if (paymentController.productList.isNotEmpty) {
+                        for (var item in productsList) {
+                          paymentController.removeProduct(item);
+                        }
+                      }
+                    });
+                  } else {
+                    Get.snackbar(
+                      'No items in cart',
+                      'You must add items to your cart or select a product before placing the order.',
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
+                    );
+                  }
+                } else {
+                  Get.snackbar(
+                    'Select your delivery address',
+                    'You have to select the address for delivery',
+                    backgroundColor: Colors.red,
+                    colorText: Colors.white,
+                  );
+                }
+              })
         ],
       ),
     );
