@@ -7,7 +7,7 @@ This shopping app is a mobile application built using Flutter, designed to provi
 
 ## **Tech Stack**
 - Frontend : The app is built using **Flutter** for a cross-platform mobile experience  
-- Backend Implementation: Firebase is used for Authentication and firestore activities   
+- Backend Implementation: **Firebase** is used for Authentication and firestore activities   
 
 ---
 
@@ -82,8 +82,8 @@ flutter run
 
 ---
 
-### Contact
-- Abhinandhana PU - Flutter Developer
+### Contributors
+- **Abhinandhana PU** - Flutter Developer
 - If you have any questions or feedback, feel free to reach out to me at abhinandhanapu@gmail.com.
 
 ---
