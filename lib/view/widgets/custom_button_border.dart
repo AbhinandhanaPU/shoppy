@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 
 class CustomBorderedButton extends StatelessWidget {
@@ -21,15 +20,15 @@ class CustomBorderedButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(bgColor ?? Colors.white),
-        foregroundColor: MaterialStateProperty.all(fgColor ?? Colors.blue),
-        shape: MaterialStateProperty.all(
+        backgroundColor: WidgetStateProperty.all(bgColor ?? Colors.white),
+        foregroundColor: WidgetStateProperty.all(fgColor ?? Colors.blue),
+        shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
             side: BorderSide(color: fgColor ?? Colors.blue),
             borderRadius: BorderRadius.all(Radius.circular(radius ?? 5)),
           ),
         ),
-        padding: MaterialStateProperty.all(
+        padding: WidgetStateProperty.all(
           const EdgeInsets.symmetric(vertical: 8, horizontal: 35),
         ),
       ),
