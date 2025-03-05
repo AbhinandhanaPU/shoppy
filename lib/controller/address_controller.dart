@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 class AddressController extends GetxController {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController contactNumberController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController houseNoController = TextEditingController();
   final TextEditingController roadNameController = TextEditingController();
   final TextEditingController cityController = TextEditingController();
@@ -35,6 +36,7 @@ class AddressController extends GetxController {
           .add({
         'name': nameController.text,
         'contactNumber': contactNumberController.text,
+        'email': emailController.text,
         'houseNo': houseNoController.text,
         'roadName': roadNameController.text,
         'city': cityController.text,
@@ -135,6 +137,7 @@ class AddressController extends GetxController {
   bool validateFields() {
     if (nameController.text.isEmpty ||
         contactNumberController.text.isEmpty ||
+        emailController.text.isEmpty ||
         houseNoController.text.isEmpty ||
         roadNameController.text.isEmpty ||
         cityController.text.isEmpty ||
@@ -149,7 +152,9 @@ class AddressController extends GetxController {
     fullAddress.value = '''
 ${nameController.text} 
 ${houseNoController.text}, ${roadNameController.text}, ${cityController.text}, ${stateController.text}, ${pincodeController.text}, 
-Contact: ${contactNumberController.text}''';
+Contact: ${contactNumberController.text}
+Email Address: ${emailController.text}
+''';
   }
 
   void saveAddress() async {
