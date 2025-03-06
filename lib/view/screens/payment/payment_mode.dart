@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,14 +6,13 @@ import 'package:shoppy/controller/cart_controller.dart';
 import 'package:shoppy/controller/payment_controller.dart';
 import 'package:shoppy/controller/receipt_controller/pdf_controller.dart';
 import 'package:shoppy/model/cart_model.dart';
-import 'package:shoppy/model/product_model.dart';
 import 'package:shoppy/view/screens/payment/address_screen.dart';
-import 'package:shoppy/view/screens/payment/payment.dart';
+import 'package:shoppy/view/screens/payment/cash_on_delivery.dart';
 import 'package:shoppy/view/widgets/custom_button_widget.dart';
 
-class PayementMode extends StatelessWidget {
+class PaymentMode extends StatelessWidget {
   final List<CartItem> cartItem;
-  PayementMode({
+  PaymentMode({
     super.key,
     this.cartItem = const [],
   });
@@ -81,66 +78,39 @@ class PayementMode extends StatelessWidget {
   }
 
   // Payment Option widget
-  Widget _buildPaymentOption({
-    required String title,
-    required String value,
-  }) {
-    return Obx(() {
-      return InkWell(
-        onTap: () {
-          paymentController.updatePaymentMethod(value);
-        },
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: paymentController.selectedPaymentMethod.value == value
-                  ? Colors.blue
-                  : Colors.grey,
-              width: 1,
+  Widget _buildPaymentOption({required String title, required String value}) {
+    return InkWell(
+      onTap: () {
+        paymentController.updatePaymentMethod(value);
+      },
+      child: Obx(() => Container(
+            // Only wrap reactive parts inside Obx
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: paymentController.selectedPaymentMethod.value == value
+                    ? Colors.blue
+                    : Colors.grey,
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(10),
             ),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    paymentController.totalPrice.value.toString(),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 20,
-                    ),
-                  ),
-                  const SizedBox(width: 20),
-                  Container(
-                    width: 1,
-                    height: 30,
-                    color: Colors.grey,
-                  ),
-                  const SizedBox(width: 20),
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                ],
-              ),
-              Radio<String>(
-                value: value,
-                groupValue: paymentController.selectedPaymentMethod.value,
-                onChanged: (String? newValue) {
-                  paymentController.updatePaymentMethod(newValue!);
-                },
-                activeColor: Colors.blue,
-              ),
-            ],
-          ),
-        ),
-      );
-    });
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(title, style: const TextStyle(fontSize: 18)),
+                Radio<String>(
+                  value: value,
+                  groupValue: paymentController.selectedPaymentMethod.value,
+                  onChanged: (String? newValue) {
+                    paymentController.updatePaymentMethod(newValue!);
+                  },
+                  activeColor: Colors.blue,
+                ),
+              ],
+            ),
+          )),
+    );
   }
 
   // 'Select Address' button widget
@@ -234,70 +204,66 @@ class PayementMode extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Text(
-            paymentController.totalPrice.value.toStringAsFixed(2),
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 25,
+          Obx(
+            () => Text(
+              paymentController.totalPrice.value.toStringAsFixed(2),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
             ),
           ),
           const Spacer(),
           CustomFilledButton(
-              text: 'Place Order',
-              onPressed: () async {
-                if (addressController.fullAddress.value != '') {
-                  log(cartItem.length.toString());
-                  log(paymentController.productList.length.toString());
+            text: 'Place Order',
+            onPressed: () async {
+              if (addressController.fullAddress.value.isEmpty) {
+                Get.snackbar(
+                  'Select your delivery address',
+                  'You have to select the address for delivery',
+                  backgroundColor: Colors.red,
+                  colorText: Colors.white,
+                );
+                return;
+              }
 
-                  if (cartItem.isNotEmpty ||
-                      paymentController.productList.isNotEmpty) {
-                    bool isOnline =
-                        paymentController.selectedPaymentMethod.value ==
-                            'Online Payment';
-                    await simulatePayment(isOnline);
+              if (paymentController.totalPrice.value == 0) {
+                Get.snackbar("Error", "No products in the cart!",
+                    snackPosition: SnackPosition.BOTTOM);
+                return;
+              }
 
-                    await ReceiptGenerator()
-                        .generateReceipt(cartItem.isNotEmpty
-                            ? cartItem
-                            : paymentController.productList.entries
-                                .map((entry) {
-                                return CartItem(
-                                  cartItemId: '',
-                                  product: entry.key,
-                                  quantity: entry.value,
-                                  createdAt: Timestamp.now(),
-                                );
-                              }).toList())
-                        .then((value) async {
-                      if (cartItem.isNotEmpty) {
-                        for (var item in cartItem) {
-                          await cartController.removeFromCart(item.cartItemId);
-                        }
-                      }
-
-                      if (paymentController.productList.isNotEmpty) {
-                        for (var item in productsList) {
-                          paymentController.removeProduct(item);
-                        }
-                      }
-                    });
-                  } else {
-                    Get.snackbar(
-                      'No items in cart',
-                      'You must add items to your cart or select a product before placing the order.',
-                      backgroundColor: Colors.red,
-                      colorText: Colors.white,
-                    );
+              if (paymentController.selectedPaymentMethod.value ==
+                  "Online Payment") {
+                paymentController.openPaymentGateway(
+                  contact: addressController.contactNumberController.text,
+                  email: addressController.emailController.text,
+                );
+                if (cartItem.isNotEmpty) {
+                  for (var item in cartItem) {
+                    await cartController.removeFromCart(item.cartItemId);
                   }
-                } else {
-                  Get.snackbar(
-                    'Select your delivery address',
-                    'You have to select the address for delivery',
-                    backgroundColor: Colors.red,
-                    colorText: Colors.white,
-                  );
                 }
-              })
+              } else {
+                await placeCashOnDelivery();
+
+                await ReceiptGenerator().generateReceipt(
+                  paymentController.productList.map((product) {
+                    return CartItem(
+                      cartItemId: '',
+                      product: product,
+                      quantity: 1,
+                      createdAt: Timestamp.now(),
+                    );
+                  }).toList(),
+                );
+
+                paymentController.productList.clear();
+                if (cartItem.isNotEmpty) {
+                  for (var item in cartItem) {
+                    await cartController.removeFromCart(item.cartItemId);
+                  }
+                }
+              }
+            },
+          )
         ],
       ),
     );

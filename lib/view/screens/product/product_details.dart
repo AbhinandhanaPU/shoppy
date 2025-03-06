@@ -81,38 +81,40 @@ class ProductDetails extends StatelessWidget {
             ),
             const Divider(),
             const Spacer(),
-            Obx(() {
-              bool isInCart = cartController.isInCart.value;
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: CustomBorderedButton(
-                      text: isInCart ? 'Go to Cart' : 'Add to Cart',
-                      radius: 0,
-                      onPressed: () {
-                        if (isInCart) {
-                          Get.to(() => const CartScreen());
-                        } else {
-                          cartController.addToCart(product, 1);
-                        }
-                      },
-                    ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Obx(
+                  () {
+                    bool isInCart = cartController.isInCart.value;
+                    return Expanded(
+                      child: CustomBorderedButton(
+                        text: isInCart ? 'Go to Cart' : 'Add to Cart',
+                        radius: 0,
+                        onPressed: () {
+                          if (isInCart) {
+                            Get.to(() => const CartScreen());
+                          } else {
+                            cartController.addToCart(product, 1);
+                          }
+                        },
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(width: 5),
+                Expanded(
+                  child: CustomFilledButton(
+                    text: 'Buy Now',
+                    radius: 0,
+                    onPressed: () {
+                      paymentController.addProduct(product);
+                      Get.to(() => const AddressScreen());
+                    },
                   ),
-                  const SizedBox(width: 5),
-                  Expanded(
-                    child: CustomFilledButton(
-                      text: 'Buy Now',
-                      radius: 0,
-                      onPressed: () {
-                        paymentController.addProduct(product, 1);
-                        Get.to(() => const AddressScreen());
-                      },
-                    ),
-                  ),
-                ],
-              );
-            }),
+                ),
+              ],
+            ),
           ],
         ),
       ),

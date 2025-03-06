@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shoppy/controller/address_controller.dart';
-import 'package:shoppy/controller/payment_controller.dart';
 import 'package:shoppy/model/cart_model.dart';
+import 'package:shoppy/view/screens/payment/payment_mode.dart';
 import 'package:shoppy/view/widgets/custom_button_widget.dart';
 import 'package:shoppy/view/widgets/textformfield.dart';
 
@@ -16,7 +16,6 @@ class AddressScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AddressController addressController = Get.put(AddressController());
-    final PaymentController paymentController = Get.put(PaymentController());
 
     return Scaffold(
       backgroundColor: Colors.grey.shade300,
@@ -189,10 +188,7 @@ class AddressScreen extends StatelessWidget {
                     text: 'Save Address and Continue',
                     onPressed: () {
                       addressController.saveAddress();
-                      paymentController.openPaymentGateway(
-                        contact: addressController.contactNumberController.text,
-                        email: addressController.emailController.text,
-                      ); // Get.to(() => PayementMode(cartItem: cartItem));
+                      Get.to(() => PaymentMode(cartItem: cartItem));
                     },
                   ),
                 )
